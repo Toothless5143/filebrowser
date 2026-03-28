@@ -19,6 +19,7 @@ import * as settingsApi from "./settings";
 import * as toolsApi from "./tools";
 import * as officeApi from "./office";
 import * as mediaApi from "./media";
+import * as trashApi from "./trash";
 
 export { 
     authApi,
@@ -29,6 +30,7 @@ export {
     settingsApi,
     toolsApi,
     officeApi,
-    mediaApi
+    mediaApi,
+    trashApi
 };
 

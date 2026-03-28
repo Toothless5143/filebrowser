@@ -786,13 +786,13 @@
     "orange": "orange"
   },
   "editor": {
-    "uninitialized":"Failed to initialize the editor. Please reload.",
-    "saveFailed":"Failed to save file. Please try again.",
-    "saveAborted":"Save aborted. The file name does not match the active file.",
-    "saveAbortedMessage":"Save operation aborted. The application's active file ({activeFile}) does not match the file you are trying to save ({tryingToSave}).",
-    "syncFailed":"failed to sync state with the route for \"{filename}\" after 5 attempts. Aborting editor setup to prevent data corruption.",
-    "fileSaved":"File saved!",
-    "errorSavingFile":"Error saving file: {error}"
+    "uninitialized": "Failed to initialize the editor. Please reload.",
+    "saveFailed": "Failed to save file. Please try again.",
+    "saveAborted": "Save aborted. The file name does not match the active file.",
+    "saveAbortedMessage": "Save operation aborted. The application's active file ({activeFile}) does not match the file you are trying to save ({tryingToSave}).",
+    "syncFailed": "failed to sync state with the route for \"{filename}\" after 5 attempts. Aborting editor setup to prevent data corruption.",
+    "fileSaved": "File saved!",
+    "errorSavingFile": "Error saving file: {error}"
   },
   "player": {
     "LoopEnabled": "Loop Enabled",
@@ -940,5 +940,20 @@
     "documentDownload": "Document Download - Complete",
     "editorSuccess": "Editor Initialization - Success! All steps completed.",
     "setupError": "Setup Error"
+  },
+  "trash": {
+    "title": "Trash",
+    "description": "Files moved to trash are stored here. You can restore or permanently delete them.",
+    "empty": "Trash is empty",
+    "selected": "selected",
+    "restore": "Restore",
+    "deletePermanently": "Delete Permanently",
+    "emptyTrash": "Empty Trash",
+    "emptyConfirm": "Are you sure you want to permanently delete all items in the trash? This action cannot be undone.",
+    "restoredSuccess": "Items restored successfully!",
+    "deletedSuccess": "Items permanently deleted!",
+    "emptiedSuccess": "Trash emptied successfully!",
+    "restorePartial": "Failed to restore {count} item(s)",
+    "deletePartial": "Failed to delete {count} item(s)"
   }
 }
