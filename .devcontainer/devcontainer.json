@@ -1,0 +1,42 @@
+{
+  "name": "FileBrowser Quantum",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.25"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "nodeGypDependencies": false
+    }
+  },
+  "onCreateCommand": "make setup",
+  "postCreateCommand": "echo '✅ FileBrowser Quantum dev environment ready. Run: make dev'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "Vue.volar",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "go.toolsManagement.autoUpdate": true,
+        "editor.formatOnSave": true,
+        "[go]": {
+          "editor.defaultFormatter": "golang.go"
+        },
+        "[vue]": {
+          "editor.defaultFormatter": "Vue.volar"
+        }
+      }
+    }
+  },
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "FileBrowser",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}

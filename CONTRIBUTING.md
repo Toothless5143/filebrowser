@@ -90,6 +90,24 @@ make test-playwright   # E2E tests in Docker
 
 E2E tests run with three authentication modes: standard auth, no auth, and proxy auth.
 
+### Verifying Trash Functionality
+
+The trash feature is covered by a dedicated test suite. Run only those tests with:
+
+```bash
+cd backend && go test -race -timeout=60s -v ./adapters/fs/files/... -run Trash
+```
+
+The test suite validates:
+- Moving files and directories to trash (`TestMoveToTrash_File`, `TestMoveToTrash_Directory`)
+- Listing trash contents (`TestListTrash`)
+- Restoring items to their original location (`TestRestoreFromTrash`)
+- Permanently deleting individual items from trash (`TestDeleteFromTrash`)
+- Emptying the entire trash (`TestEmptyTrash`)
+- Security: preventing the trash directory itself from being trashed (`TestMoveToTrash_PreventTrashingTrashDir`)
+
+All seven tests should report `PASS`. The HTTP API endpoints (`GET /api/trash`, `POST /api/trash/restore`, `DELETE /api/trash`, `DELETE /api/trash/empty`) are registered in `backend/http/httpRouter.go` and covered by the full HTTP test suite (`make test-backend`).
+
 ### Coverage & Performance
 ```bash
 cd backend
@@ -125,6 +143,41 @@ The project builds into a single binary with embedded frontend:
 make build-frontend  # Build Vue.js app
 make build-backend   # Build Go binary with embedded assets
 ```
+
+The resulting binary is located at `backend/filebrowser`. It embeds all frontend assets and can be run as a standalone executable without any additional dependencies.
+
+### Building in GitHub Codespace
+
+This repository ships with a ready-to-use [Dev Container](.devcontainer/devcontainer.json) configuration. Opening the repository in a GitHub Codespace automatically provisions a container with Go 1.25 and Node.js 20 pre-installed and runs `make setup` on creation.
+
+**Steps to build a standalone binary in Codespace:**
+
+1. **Open in Codespace** – click the green *Code* button on GitHub → *Codespaces* → *Create codespace on …*.
+
+2. **Wait for the container to initialize** – the terminal shows `✅ FileBrowser Quantum dev environment ready` when setup is complete.
+
+3. **Build the frontend** (compiles Vue.js and copies assets into `backend/http/embed`):
+   ```bash
+   make build-frontend
+   ```
+
+4. **Build the backend binary** (embeds the compiled frontend and produces a single executable):
+   ```bash
+   make build-backend
+   ```
+
+5. **Run the binary**:
+   ```bash
+   ./backend/filebrowser -c backend/test_config.yaml
+   ```
+   The server starts on port 8080. Codespace automatically forwards that port and opens it in the browser.
+
+**One-shot build** (both steps combined):
+```bash
+make build
+```
+
+> **Note:** If you only need a development server with hot-reloading, skip the build steps and run `make dev` instead.
 
 ### Docker
 ```bash
