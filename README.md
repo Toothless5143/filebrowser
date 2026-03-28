@@ -76,6 +76,16 @@ If the action does not depend on context, it will exist in the slide-out
 action panel. If the action is available based on context, it will show up as
 a pop-up menu.
 
+### Sidebar Navigation Buttons
+
+The sidebar features a clean, single-row navigation bar with three quick-access buttons:
+
+  - 🏠 **Home** — jump back to the root files view instantly.
+  - ➕ **File Actions** — open the create/upload context menu.
+  - 🗑️ **Trash** — browse and manage deleted files.
+
+> ⚡ This sidebar layout was vibecoded for a snappy, intuitive UX.
+
 <p align="center">
   <img width="1000" src="https://github.com/user-attachments/assets/aa32b05c-f917-47bb-b07f-857edc5e47f7" title="Search GIF">
 </p>

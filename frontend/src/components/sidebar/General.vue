@@ -49,28 +49,52 @@
       </div>
     </div>
 
-    <!-- Sidebar file actions -->
-    <transition v-if="shareInfo.shareType !== 'upload'" name="expand" @before-enter="beforeEnter" @enter="enter"
-      @leave="leave">
-      <div v-if="!hideSidebarFileActions && isListingView" class="card-wrapper">
-        <button @click="openContextMenu" aria-label="File-Actions" data-testid="file-actions-button" class="action file-actions">
+    <!-- Navigation action buttons row: Home | File Actions | Trash -->
+    <!-- vibecoded: buttons aligned in a single row for a cleaner sidebar layout -->
+    <div v-if="isDataLoaded && !isShare" class="card-wrapper nav-actions-row">
+      <!-- Home button -->
+      <button
+        @click="navigateToHome"
+        aria-label="home"
+        class="action nav-action-btn"
+        :title="$t('general.home')"
+      >
+        <i class="material-icons">home</i>
+        <span class="nav-action-label">{{ $t("general.home") }}</span>
+      </button>
+
+      <!-- File Actions button -->
+      <transition v-if="shareInfo.shareType !== 'upload'" name="expand" @before-enter="beforeEnter" @enter="enter" @leave="leave">
+        <button
+          v-if="!hideSidebarFileActions && isListingView"
+          @click="openContextMenu"
+          aria-label="File-Actions"
+          data-testid="file-actions-button"
+          class="action nav-action-btn"
+          :title="$t('sidebar.fileActions')"
+        >
           <i class="material-icons">add</i>
-          {{ $t("sidebar.fileActions") }}
+          <span class="nav-action-label">{{ $t("sidebar.fileActions") }}</span>
         </button>
-      </div>
-    </transition>
+      </transition>
+
+      <!-- Trash button -->
+      <button
+        v-if="canDelete"
+        @click="navigateToTrash"
+        aria-label="trash"
+        class="action nav-action-btn"
+        :title="$t('trash.title')"
+      >
+        <i class="material-icons">delete</i>
+        <span class="nav-action-label">{{ $t("trash.title") }}</span>
+      </button>
+    </div>
     <!-- Hidden marker for tests to detect when file actions should be available -->
     <div v-if="isDataLoaded && isListingView && shareInfo.shareType !== 'upload'"
          data-testid="file-actions-ready"
          style="display: none;"
          :data-hidden="hideSidebarFileActions">
-    </div>
-    <!-- Trash link: visible to logged-in users with delete permission -->
-    <div v-if="isDataLoaded && !isShare && canDelete" class="card-wrapper">
-      <button @click="navigateToTrash" aria-label="trash" class="action file-actions">
-        <i class="material-icons">delete</i>
-        {{ $t("trash.title") }}
-      </button>
     </div>
   </div>
 
@@ -155,6 +179,10 @@ export default {
     },
   },
   methods: {
+    navigateToHome() {
+      this.$router.push({ path: "/files" });
+      mutations.closeTopPrompt();
+    },
     navigateToTrash() {
       this.$router.push({ path: "/trash" });
       mutations.closeTopPrompt();
@@ -470,6 +498,43 @@ a.person-button {
 
 .file-actions i {
   padding: 0em !important;
+}
+
+/* Nav actions row: Home | File Actions | Trash aligned horizontally */
+.nav-actions-row {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  gap: 0.25em;
+  padding: 0.25em 0 !important;
+  margin-top: 0.5em;
+}
+
+.nav-action-btn {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0.35em 0.25em !important;
+  gap: 0.15em;
+  font-size: 0.8em;
+  border-radius: 0.5em;
+  min-width: 0;
+}
+
+.nav-action-btn i {
+  font-size: 1.4em;
+  padding: 0 !important;
+}
+
+.nav-action-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .expand-enter-active,

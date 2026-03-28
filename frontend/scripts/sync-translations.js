@@ -2,7 +2,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as glob from 'glob';
+import { globSync } from 'glob';
 import * as deepl from 'deepl-node';
 
 // Parse command line arguments
@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 const localesDir = path.resolve(__dirname, '../src/i18n');
 const masterLocaleFile = path.join(localesDir, 'en.json');
 const masterLanguageCode = 'en';
-const targetLocaleFiles = glob.sync(path.join(localesDir, '*.json'))
+const targetLocaleFiles = globSync(path.join(localesDir, '*.json'))
   .filter(file => path.basename(file) !== `${masterLanguageCode}.json`)
   .filter(file => path.basename(file) !== 'is.json'); // Exclude Icelandic - DeepL doesn't support it
 
