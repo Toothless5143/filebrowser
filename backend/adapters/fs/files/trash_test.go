@@ -1,6 +1,7 @@
 package files
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -247,7 +248,8 @@ func TestEmptyTrash(t *testing.T) {
 
 	// Add multiple files to trash
 	for i := 0; i < 3; i++ {
-		f := filepath.Join(root, "file.txt")
+		fname := fmt.Sprintf("file%d.txt", i+1)
+		f := filepath.Join(root, fname)
 		if err := os.WriteFile(f, []byte("data"), 0644); err != nil {
 			t.Fatalf("Failed to create test file: %v", err)
 		}

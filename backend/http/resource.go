@@ -291,7 +291,10 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 				return http.StatusNotFound, fmt.Errorf("resource not available")
 			}
 
-			// Delete the file/directory (shares always use permanent delete)
+			// Delete the file/directory.
+			// Share-context deletions always use permanent delete: trash is
+			// a per-source feature and the share may reference a different user's
+			// source, so we cannot safely resolve a trash directory for the share.
 			err = files.DeleteFiles(sourceName, fileInfo.RealPath, fileInfo.Type == "directory")
 			if err != nil {
 				logger.Errorf("resource bulk delete handler: error deleting file/directory: %v", err)
