@@ -132,6 +132,7 @@ func resourceDeleteHandler(w http.ResponseWriter, r *http.Request, d *requestCon
 
 	path := r.URL.Query().Get("path")
 	source := r.URL.Query().Get("source")
+	permanent := r.URL.Query().Get("permanent") == "true"
 
 	if path == "/" {
 		return http.StatusForbidden, fmt.Errorf("cannot delete your user's root directory")
@@ -149,7 +150,11 @@ func resourceDeleteHandler(w http.ResponseWriter, r *http.Request, d *requestCon
 	// delete thumbnails
 	preview.DelThumbs(r.Context(), *fileInfo)
 
-	err = files.DeleteFiles(source, fileInfo.RealPath, fileInfo.Type == "directory")
+	if permanent {
+		err = files.DeleteFiles(source, fileInfo.RealPath, fileInfo.Type == "directory")
+	} else {
+		_, err = files.MoveToTrash(source, fileInfo.RealPath, fileInfo.Type == "directory")
+	}
 	if err != nil {
 		return errToStatus(err), err
 	}
@@ -200,6 +205,7 @@ type MoveCopyResponse struct {
 // @Accept json
 // @Produce json
 // @Param items body []BulkDeleteItem true "Array of items to delete, each with source and path"
+// @Param permanent query bool false "Permanently delete without moving to trash"
 // @Success 200 {object} BulkDeleteResponse "All resources deleted successfully"
 // @Success 207 {object} BulkDeleteResponse "Partial success - some resources deleted, some failed"
 // @Failure 400 {object} map[string]string "Bad request - invalid JSON or empty items array"
@@ -217,6 +223,8 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 			return http.StatusForbidden, fmt.Errorf("user is not allowed to delete")
 		}
 	}
+
+	permanent := r.URL.Query().Get("permanent") == "true"
 
 	// Parse request body
 	var items []BulkDeleteItem
@@ -283,7 +291,10 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 				return http.StatusNotFound, fmt.Errorf("resource not available")
 			}
 
-			// Delete the file/directory
+			// Delete the file/directory.
+			// Share-context deletions always use permanent delete: trash is
+			// a per-source feature and the share may reference a different user's
+			// source, so we cannot safely resolve a trash directory for the share.
 			err = files.DeleteFiles(sourceName, fileInfo.RealPath, fileInfo.Type == "directory")
 			if err != nil {
 				logger.Errorf("resource bulk delete handler: error deleting file/directory: %v", err)
@@ -343,7 +354,11 @@ func resourceBulkDeleteHandler(w http.ResponseWriter, r *http.Request, d *reques
 				})
 				continue
 			}
-			err = files.DeleteFiles(item.Source, fileInfo.RealPath, fileInfo.Type == "directory")
+			if permanent {
+				err = files.DeleteFiles(item.Source, fileInfo.RealPath, fileInfo.Type == "directory")
+			} else {
+				_, err = files.MoveToTrash(item.Source, fileInfo.RealPath, fileInfo.Type == "directory")
+			}
 			if err != nil {
 				response.Failed = append(response.Failed, BulkDeleteItem{
 					Source:  item.Source,

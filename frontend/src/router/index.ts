@@ -5,6 +5,7 @@ import Files from "@/views/Files.vue";
 import Settings from "@/views/Settings.vue";
 import Errors from "@/views/Errors.vue";
 import Tools from "@/views/Tools.vue";
+import Trash from "@/views/Trash.vue";
 import { globalVars } from "@/utils/constants";
 import { getters, state } from "@/store";
 import { mutations } from "@/store";
@@ -24,6 +25,7 @@ const titles = {
   GlobalSettings: i18n.global.t("settings.globalSettings"),
   Users: i18n.global.t("general.users"),
   User: i18n.global.t("general.user"),
+  Trash: i18n.global.t("trash.title"),
   Forbidden: i18n.global.t("errors.forbidden"),
   NotFound: i18n.global.t("errors.notFound"),
   ShareNotFound: i18n.global.t("errors.shareNotFound"),
@@ -87,6 +89,20 @@ const routes: RouteRecordRaw[] = [
         path: "",
         name: "ChildTool",
         component: Tools,
+      },
+    ],
+  },
+  {
+    path: "/trash",
+    component: Layout,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "",
+        name: "Trash",
+        component: Trash,
       },
     ],
   },

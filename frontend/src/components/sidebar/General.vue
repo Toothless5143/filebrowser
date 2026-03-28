@@ -65,6 +65,13 @@
          style="display: none;"
          :data-hidden="hideSidebarFileActions">
     </div>
+    <!-- Trash link: visible to logged-in users with delete permission -->
+    <div v-if="isDataLoaded && !isShare && canDelete" class="card-wrapper">
+      <button @click="navigateToTrash" aria-label="trash" class="action file-actions">
+        <i class="material-icons">delete</i>
+        {{ $t("trash.title") }}
+      </button>
+    </div>
   </div>
 
   <!-- Sidebar Links Component (replaces sources) -->
@@ -123,6 +130,7 @@ export default {
     signup: () => globalVars.signup,
     disableExternal: () => globalVars.disableExternal,
     canLogout: () => !globalVars.noAuth && state.user?.username !== 'anonymous',
+    canDelete: () => state.user?.permissions?.delete === true,
     route: () => state.route,
     realtimeActive: () => state.realtimeActive,
     darkModeTogglePossible: () => state.shareInfo?.enforceDarkLightMode != "dark" && state.shareInfo?.enforceDarkLightMode != "light",
@@ -147,6 +155,10 @@ export default {
     },
   },
   methods: {
+    navigateToTrash() {
+      this.$router.push({ path: "/trash" });
+      mutations.closeTopPrompt();
+    },
     openContextMenu() {
       mutations.resetSelected();
       mutations.showPrompt({

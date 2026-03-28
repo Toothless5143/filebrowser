@@ -163,6 +163,14 @@ func StartHttp(ctx context.Context, storage *bolt.BoltStore, shutdownComplete ch
 	api.HandleFunc("GET /settings/sources", withUser(getSourceInfoHandler))
 
 	// ========================================
+	// Trash Routes - /api/trash/
+	// ========================================
+	api.HandleFunc("GET /trash", withUser(trashListHandler))
+	api.HandleFunc("POST /trash/restore", withUser(trashRestoreHandler))
+	api.HandleFunc("DELETE /trash", withUser(trashDeleteHandler))
+	api.HandleFunc("DELETE /trash/empty", withUser(trashEmptyHandler))
+
+	// ========================================
 	// Tools Routes - /api/tools/
 	// ========================================
 	api.HandleFunc("GET /tools/search", withUser(searchHandler))
